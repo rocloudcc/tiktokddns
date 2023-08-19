@@ -9,6 +9,7 @@ dns_servers=(
     ["TH"]="61.19.42.5 8.8.8.8"
     ["ID"]="202.146.128.3 202.146.128.7 202.146.131.12"
     ["TW"]="168.95.1.1 8.8.8.8"
+    ["CN"]="111.202.100.123 101.95.120.109 101.95.120.106"
     ["HK"]="1.1.1.1 8.8.8.8"
     ["JP"]="133.242.1.1 133.242.1.2"
     ["US"]="1.1.1.1 8.8.8.8"
@@ -22,15 +23,17 @@ country=$(curl -s https://ipinfo.io/country)
 # 检查并安装所需的软件包
 install_required_packages() {
     if ! command -v nslookup &>/dev/null || ! command -v host &>/dev/null; then
+        local package_manager=""
         if command -v yum &>/dev/null; then
-            sudo yum install -y bind-utils
+            package_manager="yum"
         elif command -v apt-get &>/dev/null; then
-            sudo apt-get update
-            sudo apt-get install -y dnsutils
+            package_manager="apt-get"
         else
             echo "无法自动安装软件包，请手动安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）。"
             exit 1
         fi
+        sudo $package_manager update
+        sudo $package_manager install -y bind-utils dnsutils
     fi
 }
 
@@ -65,18 +68,10 @@ check_dns() {
 
 # 主函数
 main() {
-    case $country in
-        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE")
-            install_required_packages
-            update_resolv_conf
-            restart_network_manager
-            check_dns
-            ;;
-        *)
-            echo -e "未识别的国家或不在列表中。"
-            exit 1
-            ;;
-    esac
+    install_required_packages
+    update_resolv_conf
+    restart_network_manager
+    check_dns
 }
 
 # 执行主函数
