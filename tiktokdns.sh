@@ -41,6 +41,7 @@ dns_servers=(
     ["JP"]="133.242.1.1 133.242.1.2"
     ["US"]="1.1.1.1 8.8.8.8"
     ["DE"]="217.172.224.47 194.150.168.168"
+    ["SG"]="203.126.118.38 203.126.238.211"
     # ... 添加其他国家的DNS服务器
 )
 
@@ -94,7 +95,7 @@ install_package() {
 # 主函数
 main() {
     case $country in
-        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE")
+        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE"|"SG")
             install_package bind-utils dnsutils
             update_resolv_conf
             if check_custom_dns; then
