@@ -20,11 +20,6 @@ dns_servers=(
 # 获取国家
 country=$(curl -s https://ipinfo.io/country)
 
-# 重启 NetworkManager
-restart_network_manager() {
-    sudo systemctl restart NetworkManager
-}
-
 # 修改 /etc/resolv.conf
 update_resolv_conf() {
     echo -e "# New DNS Servers" | sudo tee /etc/resolv.conf.new
@@ -34,16 +29,27 @@ update_resolv_conf() {
     sudo mv /etc/resolv.conf.new /etc/resolv.conf
 }
 
+# 重启 NetworkManager
+restart_network_manager() {
+    if command -v systemctl &>/dev/null; then
+        sudo systemctl restart NetworkManager
+    elif command -v service &>/dev/null; then
+        sudo service NetworkManager restart
+    fi
+}
+
 # 主函数
 main() {
     case $country in
         "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"CN"|"HK"|"JP"|"US"|"DE")
             update_resolv_conf
             restart_network_manager
-            if command -v dig &>/dev/null; then
-                dig whoer.net || echo "无法执行dig命令。"
+            if command -v nslookup &>/dev/null; then
+                nslookup whoer.net || echo "无法执行nslookup命令。"
+            elif command -v host &>/dev/null; then
+                host whoer.net || echo "无法执行host命令。"
             else
-                echo "未找到dig命令，请安装dnsutils（Debian/Ubuntu）或bind-utils（CentOS/RHEL）后重试。"
+                echo "未找到nslookup或host命令，请安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）后重试。"
             fi
             ;;
         *)
