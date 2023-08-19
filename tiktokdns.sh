@@ -45,7 +45,7 @@ check_dns() {
     elif command -v host &>/dev/null; then
         host whoer.net || echo "无法执行host命令。"
     else
-        echo "未找到nslookup或host命令，请安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）后重试。"
+        echo "未找到nslookup或host命令，请安装bind-utils（CentOS/RHEL）后重试。"
     fi
 }
 
