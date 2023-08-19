@@ -9,7 +9,6 @@ dns_servers=(
     ["TH"]="61.19.42.5 8.8.8.8"
     ["ID"]="202.146.128.3 202.146.128.7 202.146.131.12"
     ["TW"]="168.95.1.1 8.8.8.8"
-    ["CN"]="111.202.100.123 101.95.120.109 101.95.120.106"
     ["HK"]="1.1.1.1 8.8.8.8"
     ["JP"]="133.242.1.1 133.242.1.2"
     ["US"]="1.1.1.1 8.8.8.8"
@@ -19,6 +18,21 @@ dns_servers=(
 
 # 获取国家
 country=$(curl -s https://ipinfo.io/country)
+
+# 检查并安装所需的软件包
+install_required_packages() {
+    if ! command -v nslookup &>/dev/null || ! command -v host &>/dev/null; then
+        if command -v yum &>/dev/null; then
+            sudo yum install -y bind-utils
+        elif command -v apt-get &>/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y dnsutils
+        else
+            echo "无法自动安装软件包，请手动安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）。"
+            exit 1
+        fi
+    fi
+}
 
 # 修改 /etc/resolv.conf
 update_resolv_conf() {
@@ -45,14 +59,15 @@ check_dns() {
     elif command -v host &>/dev/null; then
         host whoer.net || echo "无法执行host命令。"
     else
-        echo "未找到nslookup或host命令，请安装bind-utils（CentOS/RHEL）后重试。"
+        echo "仍然未找到nslookup或host命令，请手动安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）。"
     fi
 }
 
 # 主函数
 main() {
     case $country in
-        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"CN"|"HK"|"JP"|"US"|"DE")
+        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE")
+            install_required_packages
             update_resolv_conf
             restart_network_manager
             check_dns
