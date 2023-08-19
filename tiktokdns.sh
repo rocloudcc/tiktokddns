@@ -8,6 +8,12 @@ log_file="/var/log/change_dns.log"  # 日志文件路径
 exec > >(tee -i $log_file)
 exec 2>&1
 
+# 检查是否存在sudo命令
+if ! command -v sudo &> /dev/null; then
+    echo "sudo 命令不可用，请确保已安装 sudo 并配置权限。"
+    exit 1
+fi
+
 # 隐藏执行结果的函数
 execute_silent() {
     $@ &>/dev/null
@@ -25,7 +31,17 @@ echo -e "================================================"
 # 定义 DNS 服务器
 declare -A dns_servers
 dns_servers=(
+    ["PH"]="121.58.203.4 8.8.8.8"
+    ["VN"]="183.91.184.14 8.8.8.8"
+    ["MY"]="49.236.193.35 8.8.8.8"
     ["TH"]="61.19.42.5 8.8.8.8"
+    ["ID"]="202.146.128.3 202.146.128.7 202.146.131.12"
+    ["TW"]="168.95.1.1 8.8.8.8"
+    ["CN"]="111.202.100.123 101.95.120.109 101.95.120.106"
+    ["HK"]="1.1.1.1 8.8.8.8"
+    ["JP"]="133.242.1.1 133.242.1.2"
+    ["US"]="1.1.1.1 8.8.8.8"
+    ["DE"]="217.172.224.47 194.150.168.168"
     # ... 添加其他国家的DNS服务器
 )
 
@@ -68,11 +84,6 @@ install_package() {
         if command -v yum &>/dev/null; then
             execute_sudo_silent yum install -y $1
         elif command -v apt &>/dev/null; then
-            if ! command -v sudo &>/dev/null; then
-                echo "尝试安装 sudo ..."
-                execute_silent apt update
-                execute_silent apt install -y sudo
-            fi
             execute_sudo_silent apt install -y $1
         else
             echo "无法自动安装 $1，请手动安装。"
@@ -81,20 +92,10 @@ install_package() {
     fi
 }
 
-# 方案二：修改 /etc/network/interfaces.d/50-cloud-init
-update_interfaces() {
-    if grep -q "dns-nameservers" /etc/network/interfaces.d/50-cloud-init; then
-        execute_sudo_silent sudo sed -i '/dns-nameservers/d' /etc/network/interfaces.d/50-cloud-init
-        echo -e "修改 /etc/network/interfaces.d/50-cloud-init 成功。"
-    else
-        echo -e "未找到需要修改的文件。"
-    fi
-}
-
 # 主函数
 main() {
     case $country in
-        "TH")
+        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE")
             install_package bind-utils dnsutils
             update_resolv_conf
             if check_custom_dns; then
@@ -117,7 +118,7 @@ main() {
                     echo -e ""
                 else
                     echo -e "任务失败，尝试方案二。"
-                    update_interfaces
+                    execute_sudo_silent update_interfaces
                 fi
             else
                 echo -e "修改DNS失败，未找到自定义DNS。"
