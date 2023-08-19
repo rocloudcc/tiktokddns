@@ -35,9 +35,17 @@ restart_network_manager() {
         sudo systemctl restart NetworkManager
     elif command -v service &>/dev/null; then
         sudo service NetworkManager restart
-    elif command -v nmcli &>/dev/null; then
-        sudo nmcli connection down eth0
-        sudo nmcli connection up eth0
+    fi
+}
+
+# 检查并执行适用的DNS查询命令
+check_dns() {
+    if command -v nslookup &>/dev/null; then
+        nslookup whoer.net || echo "无法执行nslookup命令。"
+    elif command -v host &>/dev/null; then
+        host whoer.net || echo "无法执行host命令。"
+    else
+        echo "未找到nslookup或host命令，请安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）后重试。"
     fi
 }
 
@@ -47,15 +55,7 @@ main() {
         "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"CN"|"HK"|"JP"|"US"|"DE")
             update_resolv_conf
             restart_network_manager
-
-            # 检查并执行适用的DNS查询命令
-            if command -v nslookup &>/dev/null; then
-                nslookup whoer.net || echo "无法执行nslookup命令。"
-            elif command -v host &>/dev/null; then
-                host whoer.net || echo "无法执行host命令。"
-            else
-                echo "未找到nslookup或host命令，请安装bind-utils（CentOS/RHEL）或dnsutils（Debian/Ubuntu）后重试。"
-            fi
+            check_dns
             ;;
         *)
             echo -e "未识别的国家或不在列表中。"
