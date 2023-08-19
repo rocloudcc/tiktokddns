@@ -10,7 +10,7 @@ exec 2>&1
 
 # 检查是否存在sudo命令
 if ! command -v sudo &> /dev/null; then
-    echo "sudo 命令不可用，请确保已安装 sudo 并配置权限。"
+    echo "\e[1;33m该脚本适配于“Centos操作系统”\e[0m"
     exit 1
 fi
 
@@ -117,7 +117,7 @@ main() {
                     echo -e ""
                     echo -e ""
                 else
-                    echo -e "任务失败，尝试方案二。"
+                    echo "\e[1;33m该脚本适配于“Centos操作系统”\e[0m"
                     execute_sudo_silent update_interfaces
                 fi
             else
@@ -125,7 +125,7 @@ main() {
             fi
             ;;
         *)
-            echo -e "\e[1;33m未识别的国家或不在列表中\e[0m"
+            echo -e "\e[1;33m未识别的国家或不在列表中，请联系作者添加目标国家\e[0m"
             exit 1
             ;;
     esac
