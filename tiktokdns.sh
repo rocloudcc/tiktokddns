@@ -20,11 +20,6 @@ dns_servers=(
 # 获取国家
 country=$(curl -s https://ipinfo.io/country)
 
-# 清除DNS缓存
-flush_dns_cache() {
-    sudo systemd-resolve --flush-caches
-}
-
 # 重启 NetworkManager
 restart_network_manager() {
     sudo systemctl restart NetworkManager
@@ -44,9 +39,12 @@ main() {
     case $country in
         "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"CN"|"HK"|"JP"|"US"|"DE")
             update_resolv_conf
-            flush_dns_cache
             restart_network_manager
-            dig whoer.net || echo "无法执行dig命令。"
+            if command -v dig &>/dev/null; then
+                dig whoer.net || echo "无法执行dig命令。"
+            else
+                echo "未找到dig命令，请安装dnsutils（Debian/Ubuntu）或bind-utils（CentOS/RHEL）后重试。"
+            fi
             ;;
         *)
             echo -e "未识别的国家或不在列表中。"
