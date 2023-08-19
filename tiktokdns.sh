@@ -95,7 +95,7 @@ install_package() {
 # 主函数
 main() {
     case $country in
-        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE"|"SG")
+        "PH"|"VN"|"MY"|"TH"|"ID"|"TW"|"HK"|"JP"|"US"|"DE"|"SG"|"AE")
             install_package bind-utils dnsutils
             update_resolv_conf
             if check_custom_dns; then
