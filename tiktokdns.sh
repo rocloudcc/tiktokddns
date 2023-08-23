@@ -117,7 +117,7 @@ main() {
                     echo -e ""
                     echo -e ""
                 else
-                    echo -e "该脚本适配于“Centos操作系统”"
+                    echo -e "\e[1;32m DNS 已成功更换成目标国家：\e[1;31m$country\e[0m ✅"
                     execute_sudo_silent update_interfaces
                 fi
             else
