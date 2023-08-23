@@ -117,7 +117,7 @@ main() {
                     echo -e ""
                     echo -e ""
                 else
-                    echo -e "\e[1;31m该脚本适配于“\e[0m\e[1;31mCentos操作系统\e[0m\e[1;31m”\e[0m"
+                    echo -e "该脚本适配于“Centos操作系统”"
                     execute_sudo_silent update_interfaces
                 fi
             else
