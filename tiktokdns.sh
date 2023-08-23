@@ -10,7 +10,7 @@ exec 2>&1
 
 # 检查是否存在sudo命令
 if ! command -v sudo &> /dev/null; then
-    echo -e "该脚本适配于“Centos操作系统"
+    echo -e "该脚本适配于“Centos操作系统”"
     exit 1
 fi
 
