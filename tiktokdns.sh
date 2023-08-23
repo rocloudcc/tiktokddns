@@ -117,7 +117,7 @@ main() {
                     echo -e ""
                     echo -e ""
                 else
-                    echo -e "\e[1;32m DNS 已成功更换成目标国家：\e[1;31m$country\e[0m ✅"
+                    echo -e "\e[1;32m 可以查看一下节点DNS ：\e[1;31m是否成功更换为$country\e[0m ✅"
                     execute_sudo_silent update_interfaces
                 fi
             else
