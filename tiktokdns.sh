@@ -105,7 +105,7 @@ main() {
                     echo -e "\e[3;33m更新DNS成功\e[0m"
                     echo -e "================================================"
                     echo -e ""
-                    echo -e "\e[3;33m定制IPLC线路：\e[1;32m广港、沪日、沪美、京德\e[0m"
+                    echo -e "\e[3;33m定制IPLC线路：\e[1;32mwww.rocloud.cc\e[0m"
                     echo -e "\e[3;33mTG群聊：\e[1;31mhttps://t.me/rocloudiplc\e[0m"
                     echo -e "\e[3;33m定制TIKTOK网络：\e[1;32m美国、泰国、越南、菲律宾等\e[0m"
                     echo -e "\e[1;33m如有问题，请联系我：\e[1;35m联系方式TG：rocloudcc\e[0m"
