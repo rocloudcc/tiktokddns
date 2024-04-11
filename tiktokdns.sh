@@ -30,8 +30,8 @@ update_network_config() {
     local dns1=$(echo $dns_server_list | cut -d ' ' -f 1)
     local dns2=$(echo $dns_server_list | cut -d ' ' -f 2)
     # 更新 DNS1 和 DNS2
-    sudo sed -i "s/^DNS1=.*/DNS1=$dns1/" /etc/sysconfig/network-scripts/ifcfg-$interface_name
-    sudo sed -i "s/^DNS2=.*/DNS2=$dns2/" /etc/sysconfig/network-scripts/ifcfg-$interface_name
+    sudo sed -i "/^DNS1=/c\DNS1=$dns1" /etc/sysconfig/network-scripts/ifcfg-$interface_name
+    sudo sed -i "/^DNS2=/c\DNS2=$dns2" /etc/sysconfig/network-scripts/ifcfg-$interface_name
 }
 
 # 重启 NetworkManager
